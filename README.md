@@ -12,7 +12,7 @@
 
 Good log messages increases customer satisfaction, as they work as sort of a guide, helping the user achieve what they wanted to achieve. Good logs minimize the amount of support calls, improve customer satisfaction and trust in your product, ultimately being a win-win for both the creators of software and the users.
 
-Inspired by Vercel's Error design framework (https://vercel.com/design/error#error-design-framework), human-logs allows you to take events, explanations and solutions, and connect them like lego-pieces, to create user-friendly logs in a versatile manner.
+Inspired by Vercel's [Error design framework](https://vercel.com/design/error#error-design-framework), human-logs allows you to take events, explanations and solutions, and connect them like lego-pieces, to create user-friendly logs in a versatile manner.
 
 **Focus on understanding the errors.**
 
