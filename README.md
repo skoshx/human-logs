@@ -8,19 +8,57 @@
 [![npm downloads][npm-downloads-src]][npm-href]
 [![Github Actions][github-actions-src]][github-actions-href]
 
-> Catch bugs in production and replay them in your local development environment. Fix bugs in production in a matter of minutes, instead of hours.
+> 🛠 A tiny log library that allows you to take events, explanations and solutions and connect them like lego-pieces to create user-friendly logs.
 
-- [🐛 &nbsp;Changelog](https://www.useflytrap.com/changelog)
-- [📖 &nbsp;Documentation](https://docs.useflytrap.com)
-- [👥 &nbsp;Discord](https://discord.gg/tQaADUfdeP)
+Good log messages increases customer satisfaction, as they work as sort of a guide, helping the user achieve what they wanted to achieve. Good logs minimize the amount of support calls, improve customer satisfaction and trust in your product, ultimately being a win-win for both the creators of software and the users.
+
+Inspired by Vercel's Error design framework (https://vercel.com/design/error#error-design-framework), human-logs allows you to take events, explanations and solutions, and connect them like lego-pieces, to create user-friendly logs in a versatile manner.
+
+**Focus on understanding the errors.**
 
 ## Features
 
-- Catch bugs both front- and backend bugs
-- Replay bugs as if you were the user who had the bug
-- Identify user who had bug
+- Create consistent, human-friendly logs throughout your application or library
+- Build versatile errors like lego-blocks
 
-[📖 &nbsp;Read more](https://docs.useflytrap.com/features)
+## 💻 Example Usage
+
+```typescript
+export const apiLogs = createHumanLogs({
+	events: {
+		project_create_failed: 'Cannot create your project'
+	},
+	explanations: {
+		api_unreachable: 'because the API cannot be reached.'
+	},
+	solutions: {
+		check_status_page: {
+			message: 'You can check the status of our services on our status page.',
+			action: [
+				{
+					text: 'Go to status page',
+					href: 'https://status.foobar.inc'
+				}
+			]
+		}
+	}
+})
+
+// You can now use `apiLogs` to create user-friendly error logs, by connecting events, explanations and solutions like lego-blocks.
+const log = apiLogs({ event: 'project_create_failed', explanation: 'api_unreachable', solution: 'check_status_page' })
+
+console.log(log.message)
+// => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page.
+
+console.log(log.action)
+/* => [{
+		text: 'Go to status page',
+		href: 'https://status.foobar.inc'
+	}]*/
+
+console.log(log.toString())
+// => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page. Go to status page (https://status.foobar.inc)
+```
 
 ## 💻 Development
 
@@ -37,12 +75,12 @@ Published under [MIT License](./LICENSE).
 
 <!-- Links -->
 
-[npm-href]: https://npmjs.com/package/useflytrap
-[github-actions-href]: https://github.com/useflytrap/flytrap-js/actions/workflows/ci.yml
+[npm-href]: https://npmjs.com/package/human-logs
+[github-actions-href]: https://github.com/skoshx/human-logs/actions/workflows/ci.yml
 
 <!-- Badges -->
 
-[npm-version-src]: https://badgen.net/npm/v/useflytrap?color=black
-[npm-downloads-src]: https://badgen.net/npm/dw/useflytrap?color=black
+[npm-version-src]: https://badgen.net/npm/v/human-logs?color=black
+[npm-downloads-src]: https://badgen.net/npm/dw/human-logs?color=black
 [prettier-src]: https://badgen.net/badge/style/prettier/black?icon=github
-[github-actions-src]: https://github.com/useflytrap/flytrap-js/actions/workflows/ci.yml/badge.svg
+[github-actions-src]: https://github.com/skoshx/human-logs/actions/workflows/ci.yml/badge.svg
