@@ -44,11 +44,11 @@
 		"release": "np"
 	},
 	"devDependencies": {
+		"@next/eslint-plugin-next": "^13.4.7",
 		"@typescript-eslint/eslint-plugin": "^5.60.1",
 		"eslint": "^8.43.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-prettier": "^4.2.1",
-		"next": "13.4.7",
 		"prettier": "^2.8.8",
 		"unbuild": "^1.2.1",
 		"vite": "^4.3.9",
