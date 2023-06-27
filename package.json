@@ -44,7 +44,6 @@
 		"release": "np"
 	},
 	"devDependencies": {
-		"@next/eslint-plugin-next": "^13.4.7",
 		"@typescript-eslint/eslint-plugin": "^5.60.1",
 		"eslint": "^8.43.0",
 		"eslint-config-prettier": "^8.8.0",
