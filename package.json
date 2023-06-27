@@ -1,0 +1,60 @@
+{
+	"name": "human-logs",
+	"version": "0.0.1",
+	"description": "Human friendly logs for your APIs & projects.",
+	"repository": "skoshx/human-logs",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"author": "skoshx <rasmus@skosh.dev>",
+	"license": "MIT",
+	"type": "module",
+	"keywords": [
+		"typescript",
+		"human-friendly",
+		"logs",
+		"api",
+		"error",
+		"logging",
+		"error-handling"
+	],
+	"scripts": {
+		"dev": "vitest dev",
+		"dev:website": "pnpm dev --filter website",
+		"build": "unbuild",
+		"test": "vitest run",
+		"test:types": "tsc --noEmit",
+		"test:coverage": "vitest run --coverage",
+		"lint": "pnpm lint:all:eslint && pnpm lint:all:prettier",
+		"lint:all:eslint": "pnpm lint:eslint --ext .ts,.js,.mjs,.cjs \"{src,test}/**/*.{js,json,ts}\"",
+		"lint:all:prettier": "pnpm lint:prettier \"{src,test,website}/**/*.{js,json,ts}\"",
+		"lint:eslint": "eslint --fix",
+		"lint:prettier": "prettier --write --loglevel warn",
+		"prepublishOnly": "pnpm lint && pnpm test",
+		"release": "np"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.60.1",
+		"eslint": "^8.43.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"prettier": "^2.8.8",
+		"unbuild": "^1.2.1",
+		"vite": "^4.3.9",
+		"vitest": "^0.32.2"
+	},
+	"packageManager": "pnpm@8.6.0",
+	"dependencies": {
+		"typescript": "5"
+	}
+}
