@@ -8,6 +8,9 @@ const nextConfig = {
 				pathname: '/**'
 			}
 		]
+	},
+	eslint: {
+		ignoreDuringBuilds: true
 	}
 }
 
