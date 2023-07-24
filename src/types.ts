@@ -3,26 +3,21 @@ export type TemplatedMessage = {
 	params: Record<string, string>
 }
 
-export type EventType = TemplatedMessage | string
+export type EventType = TemplatedMessage
 
 export type ActionType = {
 	text: string
 	href: string
 }
 
-export type SolutionType =
-	| (TemplatedMessage & {
-			action?: ActionType[]
-	  })
-	| {
-			message: string
-			action?: ActionType[]
-	  }
+export type SolutionType = TemplatedMessage & {
+	action?: ActionType[]
+}
 
 export type HumanLogsObject = {
-	events: Record<string, EventType>
-	explanations: Record<string, EventType>
-	solutions: Record<string, SolutionType>
+	events: Record<string, EventType | string>
+	explanations: Record<string, EventType | string>
+	solutions: Record<string, SolutionType | string>
 }
 
 export type HumanLogResponse = {

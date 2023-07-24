@@ -11,7 +11,7 @@
  *
  */
 
-import { ActionType, HumanLogsObject, TemplatedMessage } from './types'
+import { ActionType, HumanLogsObject, SolutionType, TemplatedMessage } from './types'
 
 function replaceTemplateParams(input: TemplatedMessage): string {
 	let result = input.template
@@ -23,60 +23,92 @@ function replaceTemplateParams(input: TemplatedMessage): string {
 	return result
 }
 
-function isTemplatedMessage(solution: any): solution is TemplatedMessage {
+function isTemplatedMessage(
+	solution: string | Record<string, unknown>
+): solution is TemplatedMessage {
+	if (typeof solution === 'string') return false
 	if (solution.template) return true
 	return false
 }
 
+function isSolutionType(solution: string | Record<string, unknown>): solution is SolutionType {
+	if (typeof solution === 'string') return false
+	if (solution.action) return true
+	return false
+}
+
+type EventKey<
+	HumanLogs extends HumanLogsObject,
+	Key extends keyof HumanLogsObject
+> = (keyof HumanLogs[Key])[]
+
+function getMessagePartsFor<HumanLogs extends HumanLogsObject>(
+	what: keyof HumanLogsObject,
+	options: HumanLogs,
+	eventKey: string
+) {
+	const messageParts: string[] = []
+	const eventTypeOrString = options[what][eventKey] as
+		| string
+		| TemplatedMessage
+		| SolutionType
+		| undefined
+	if (!eventTypeOrString) {
+		return messageParts
+	}
+
+	if (isTemplatedMessage(eventTypeOrString)) {
+		messageParts.push(replaceTemplateParams(eventTypeOrString))
+	} else {
+		messageParts.push(eventTypeOrString)
+	}
+
+	return messageParts
+}
+
 export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: HumanLogs) {
 	return function ({
-		event,
-		explanation,
-		solution
+		events,
+		explanations,
+		solutions
 	}: {
-		event?: keyof HumanLogs['events']
-		explanation?: keyof HumanLogs['explanations']
-		solution?: keyof HumanLogs['solutions']
+		events?: EventKey<HumanLogs, 'events'>
+		explanations?: EventKey<HumanLogs, 'explanations'>
+		solutions?: EventKey<HumanLogs, 'solutions'>
 	}) {
-		let message = ''
-		let action: ActionType[] | undefined
-		// Event
-		if (event && options.events[event as string]) {
-			const eventTypeOrString = options.events[event as string]
+		const messageParts: string[] = []
+		const actionParts: ActionType[] = []
 
-			if (isTemplatedMessage(eventTypeOrString)) {
-				message += replaceTemplateParams(eventTypeOrString)
-			} else {
-				message += eventTypeOrString
-			}
-		}
-		// Explanation
-		if (explanation && options.explanations[explanation as string]) {
-			const eventTypeOrString = options.explanations[explanation as string]
+		// Events
+		events?.forEach((event) => {
+			messageParts.push(...getMessagePartsFor('events', options, event as string))
+		})
 
-			if (isTemplatedMessage(eventTypeOrString)) {
-				message += ' ' + replaceTemplateParams(eventTypeOrString)
-			} else {
-				message += ' ' + eventTypeOrString
-			}
-		}
-		// Solution
-		if (solution && options.solutions[solution as string]) {
-			const solutionType = options.solutions[solution as string]
+		// Explanations
+		explanations?.forEach((explanation) => {
+			messageParts.push(...getMessagePartsFor('explanations', options, explanation as string))
+		})
 
-			if (isTemplatedMessage(solutionType)) {
-				message += ' ' + replaceTemplateParams(solutionType)
-			} else {
-				message += ' ' + solutionType.message
+		// Solutions
+		solutions?.forEach((solution) => {
+			messageParts.push(...getMessagePartsFor('solutions', options, solution as string))
+
+			const solutionOrString = options.solutions[solution as string]
+			if (!solutionOrString) {
+				return
 			}
-			action = solutionType.action
-		}
+			if (isSolutionType(solutionOrString) && solutionOrString.action) {
+				actionParts.push(...solutionOrString.action)
+			}
+		})
 
 		return {
-			message,
-			action,
+			message: messageParts.join(' '),
+			action: actionParts,
 			toString() {
-				return `${message}${action ? action.map((a) => ` ${a.text} (${a.href})`).join(' or') : ''}`
+				return `${messageParts.join(' ')}${
+					actionParts ? actionParts.map((a) => ` ${a.text} (${a.href})`).join(' or') : ''
+				}`
 			}
 		} as const
 	}
