@@ -33,7 +33,8 @@ export const apiLogs = createHumanLogs({
 	},
 	solutions: {
 		check_status_page: {
-			message: 'You can check the status of our services on our status page.',
+			template: 'You can check the status of our services on our status page.',
+			params: {},
 			action: [
 				{
 					text: 'Go to status page',
@@ -45,7 +46,11 @@ export const apiLogs = createHumanLogs({
 })
 
 // You can now use `apiLogs` to create user-friendly error logs, by connecting events, explanations and solutions like lego-blocks.
-const log = apiLogs({ event: 'project_create_failed', explanation: 'api_unreachable', solution: 'check_status_page' })
+const log = apiLogs({
+	event: ['project_create_failed'],
+	explanation: ['api_unreachable'],
+	solution: ['check_status_page']
+})
 
 console.log(log.message)
 // => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page.
