@@ -26,10 +26,17 @@ Inspired by Vercel's [Error design framework](https://vercel.com/design/error#er
 ```typescript
 export const apiLogs = createHumanLogs({
 	events: {
-		project_create_failed: 'Cannot create your project'
+		project_create_failed: 'Cannot create your project',
+		team_create_failed: 'Cannot create your team',
 	},
 	explanations: {
-		api_unreachable: 'because the API cannot be reached.'
+		api_unreachable: 'because the API cannot be reached.',
+		team_exists: {
+			template: 'because a team with ID "{teamId}" already exists.',
+			params: {
+				teamId: ''
+			}
+		}
 	},
 	solutions: {
 		check_status_page: {
@@ -63,6 +70,16 @@ console.log(log.action)
 
 console.log(log.toString())
 // => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page. Go to status page (https://status.foobar.inc)
+
+const logWithParams = apiLogs({
+	event: ['team_create_failed'],
+	explanation: ['team_exists'],
+	params: {
+		teamId: 'winning-team'
+	}
+})
+console.log(logWithParams.message)
+// => Cannot create your team because a team with ID "winning-team" already exists.
 ```
 
 ## 💻 Development
