@@ -5,7 +5,8 @@ it('can combine events, explanations and solutions', () => {
 	const humanLog = mockHumanLogs({
 		events: ['project_create_failed'],
 		explanations: ['api_unreachable'],
-		solutions: ['try_again', 'contact_us']
+		solutions: ['try_again', 'contact_us'],
+		params: {}
 	})
 
 	expect(humanLog.toString()).toEqual(
@@ -13,7 +14,7 @@ it('can combine events, explanations and solutions', () => {
 	)
 })
 
-it.skip('supports parameters', () => {
+it('supports parameters', () => {
 	const humanLog = mockHumanLogs({
 		events: ['team_create_failed'],
 		explanations: ['team_exists'],
@@ -31,7 +32,8 @@ it('smoke test', () => {
 	const humanLog = mockHumanLogs({
 		events: ['project_create_failed'],
 		explanations: ['api_unreachable'],
-		solutions: ['check_status_page']
+		solutions: ['check_status_page'],
+		params: {}
 	})
 
 	expect(humanLog.toString()).toEqual(

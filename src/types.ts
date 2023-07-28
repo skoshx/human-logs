@@ -18,6 +18,7 @@ export type HumanLogsObject = {
 	events: Record<string, EventType | string>
 	explanations: Record<string, EventType | string>
 	solutions: Record<string, SolutionType | string>
+	params?: Record<string, unknown>
 }
 
 export type HumanLogResponse = {

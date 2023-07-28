@@ -13,10 +13,10 @@
 
 import { ActionType, HumanLogsObject, SolutionType, TemplatedMessage } from './types'
 
-function replaceTemplateParams(input: TemplatedMessage): string {
+function replaceTemplateParams(input: TemplatedMessage, params: HumanLogsObject['params']): string {
 	let result = input.template
-	for (const key in input.params) {
-		const value = input.params[key]
+	for (const key in params) {
+		const value = params[key] as string
 		const placeholder = `{${key}}`
 		result = result.split(placeholder).join(value)
 	}
@@ -37,18 +37,14 @@ function isSolutionType(solution: string | Record<string, unknown>): solution is
 	return false
 }
 
-type EventKey<
-	HumanLogs extends HumanLogsObject,
-	Key extends keyof HumanLogsObject
-> = (keyof HumanLogs[Key])[]
-
 function getMessagePartsFor<HumanLogs extends HumanLogsObject>(
 	what: keyof HumanLogsObject,
 	options: HumanLogs,
-	eventKey: string
+	eventKey: string,
+	params: HumanLogs['params']
 ) {
 	const messageParts: string[] = []
-	const eventTypeOrString = options[what][eventKey] as
+	const eventTypeOrString = options[what]![eventKey] as
 		| string
 		| TemplatedMessage
 		| SolutionType
@@ -58,7 +54,7 @@ function getMessagePartsFor<HumanLogs extends HumanLogsObject>(
 	}
 
 	if (isTemplatedMessage(eventTypeOrString)) {
-		messageParts.push(replaceTemplateParams(eventTypeOrString))
+		messageParts.push(replaceTemplateParams(eventTypeOrString, params))
 	} else {
 		messageParts.push(eventTypeOrString)
 	}
@@ -67,31 +63,77 @@ function getMessagePartsFor<HumanLogs extends HumanLogsObject>(
 }
 
 export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: HumanLogs) {
-	return function ({
+	type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+		k: infer I
+	) => void
+		? I
+		: never
+	type Explanations = HumanLogs['explanations']
+	type Events = HumanLogs['events']
+	type Solutions = HumanLogs['solutions']
+	type Params<K extends Array<keyof Explanations>> = UnionToIntersection<
+		{
+			[I in keyof K]: Explanations[K[I]] extends { params: infer P } ? P : never
+		}[number]
+	>
+	type EventsParams<K extends Array<keyof Events>> = UnionToIntersection<
+		{
+			[I in keyof K]: Events[K[I]] extends { params: infer P } ? P : never
+		}[number]
+	>
+	type SolutionParams<K extends Array<keyof Solutions>> = UnionToIntersection<
+		{
+			[I in keyof K]: Solutions[K[I]] extends { params: infer P } ? P : never
+		}[number]
+	>
+
+	return function <
+		Events extends keyof HumanLogs['events'],
+		Explanations extends keyof HumanLogs['explanations'],
+		Solutions extends keyof HumanLogs['solutions']
+	>({
 		events,
 		explanations,
-		solutions
+		solutions,
+		params
 	}: {
-		events?: EventKey<HumanLogs, 'events'>
-		explanations?: EventKey<HumanLogs, 'explanations'>
-		solutions?: EventKey<HumanLogs, 'solutions'>
+		events?: Events[]
+		explanations?: Explanations[]
+		solutions?: Solutions[]
+		params?: Params<Explanations[]> & EventsParams<Events[]> & SolutionParams<Solutions[]>
 	}) {
 		const messageParts: string[] = []
 		const actionParts: ActionType[] = []
 
 		// Events
 		events?.forEach((event) => {
-			messageParts.push(...getMessagePartsFor('events', options, event as string))
+			messageParts.push(
+				...getMessagePartsFor('events', options, event as string, params as HumanLogs['params'])
+			)
 		})
 
 		// Explanations
 		explanations?.forEach((explanation) => {
-			messageParts.push(...getMessagePartsFor('explanations', options, explanation as string))
+			messageParts.push(
+				...getMessagePartsFor(
+					'explanations',
+					options,
+					explanation as string,
+					params as HumanLogs['params']
+				)
+			)
 		})
 
 		// Solutions
 		solutions?.forEach((solution) => {
-			messageParts.push(...getMessagePartsFor('solutions', options, solution as string))
+			messageParts.push(
+				...getMessagePartsFor(
+					'solutions',
+					options,
+					solution as string,
+					params as HumanLogs['params']
+				)
+			)
 
 			const solutionOrString = options.solutions[solution as string]
 			if (!solutionOrString) {

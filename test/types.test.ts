@@ -5,9 +5,10 @@ describe('Type tests', () => {
 	it('input types', () => {
 		expectTypeOf<Parameters<typeof mockHumanLogs>>([
 			{
-				event: 'project_create_failed',
-				explanation: 'api_unreachable',
-				solution: 'check_status_page'
+				events: ['project_create_failed'],
+				explanations: ['api_unreachable'],
+				solutions: ['check_status_page'],
+				params: {}
 			}
 		])
 	})
@@ -24,10 +25,57 @@ describe('Type tests', () => {
 
 	it('solution types', () => {
 		mockHumanLogs({
-			event: 'project_create_failed',
-			explanation: 'api_unreachable',
+			events: ['project_create_failed'],
+			explanations: ['api_unreachable'],
 			// @ts-expect-error
-			solution: 'nonexistent'
+			solutions: ['nonexistent']
+		})
+	})
+})
+
+describe('Params type tests', () => {
+	it('errors when not all needed params are included', () => {
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['team_exists'],
+			// @ts-expect-error: params missing
+			params: {}
+		})
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['team_exists']
+		})
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['team_exists'],
+			params: {
+				// @ts-expect-error: wrong params
+				wrong: ''
+			}
+		})
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['team_exists'],
+			// @ts-expect-error: params missing
+			params: {}
+		})
+	})
+
+	it('correct params', () => {
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['team_exists'],
+			params: {
+				teamId: ''
+			}
+		})
+
+		mockHumanLogs({
+			events: ['team_create_failed'],
+			explanations: ['api_unreachable', 'team_exists'],
+			params: {
+				teamId: 'winning-team'
+			}
 		})
 	})
 })
