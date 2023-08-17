@@ -60,9 +60,9 @@ export function Demo() {
 
 						toast.error(apiLogError.message, {
 							action: {
-								label: apiLogError.action?.at(0)?.text ?? '',
+								label: apiLogError.actions?.at(0)?.text ?? '',
 								onClick() {
-									open(apiLogError.action?.at(0)?.href, '_blank')
+									open(apiLogError.actions?.at(0)?.href, '_blank')
 								}
 							}
 						})
@@ -80,9 +80,9 @@ export function Demo() {
 
 						toast.success(apiLogSuccess.message, {
 							action: {
-								label: apiLogSuccess.action?.at(0)?.text ?? '',
+								label: apiLogSuccess.actions?.at(0)?.text ?? '',
 								onClick() {
-									open(apiLogSuccess.action?.at(0)?.href, '_blank')
+									open(apiLogSuccess.actions?.at(0)?.href, '_blank')
 								}
 							}
 						})

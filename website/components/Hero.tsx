@@ -14,9 +14,9 @@ export function Hero() {
 
 		toast.success(humanFriendlyLog.message, {
 			action: {
-				label: humanFriendlyLog.action?.at(0)?.text ?? '',
+				label: humanFriendlyLog.actions?.at(0)?.text ?? '',
 				onClick() {
-					open(humanFriendlyLog.action?.at(0)?.href, '_blank')
+					open(humanFriendlyLog.actions?.at(0)?.href, '_blank')
 				}
 			}
 		})

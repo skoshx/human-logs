@@ -102,53 +102,98 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 		solutions?: Solutions[]
 		params?: Params<Explanations[]> & EventsParams<Events[]> & SolutionParams<Solutions[]>
 	}) {
-		const messageParts: string[] = []
+		const eventParts: string[] = []
+		const explanationParts: string[] = []
+		const solutionParts: string[] = []
 		const actionParts: ActionType[] = []
 
+		const addEventParts = (events: Events[]) => {
+			events.forEach((event) => {
+				eventParts.push(
+					...getMessagePartsFor('events', options, event as string, params as HumanLogs['params'])
+				)
+			})
+		}
+
+		const addExplanationParts = (explanations: Explanations[]) => {
+			explanations?.forEach((explanation) => {
+				explanationParts.push(
+					...getMessagePartsFor(
+						'explanations',
+						options,
+						explanation as string,
+						params as HumanLogs['params']
+					)
+				)
+			})
+		}
+
+		const addSolutionParts = (solutions: Solutions[]) => {
+			solutions?.forEach((solution) => {
+				solutionParts.push(
+					...getMessagePartsFor(
+						'solutions',
+						options,
+						solution as string,
+						params as HumanLogs['params']
+					)
+				)
+
+				const solutionOrString = options.solutions[solution as string]
+				if (!solutionOrString) {
+					return
+				}
+				if (isSolutionType(solutionOrString) && solutionOrString.action) {
+					actionParts.push(...solutionOrString.action)
+				}
+			})
+		}
+
 		// Events
-		events?.forEach((event) => {
-			messageParts.push(
-				...getMessagePartsFor('events', options, event as string, params as HumanLogs['params'])
-			)
-		})
+		if (events) addEventParts(events)
 
 		// Explanations
-		explanations?.forEach((explanation) => {
-			messageParts.push(
-				...getMessagePartsFor(
-					'explanations',
-					options,
-					explanation as string,
-					params as HumanLogs['params']
-				)
-			)
-		})
+		if (explanations) addExplanationParts(explanations)
 
 		// Solutions
-		solutions?.forEach((solution) => {
-			messageParts.push(
-				...getMessagePartsFor(
-					'solutions',
-					options,
-					solution as string,
-					params as HumanLogs['params']
-				)
-			)
-
-			const solutionOrString = options.solutions[solution as string]
-			if (!solutionOrString) {
-				return
-			}
-			if (isSolutionType(solutionOrString) && solutionOrString.action) {
-				actionParts.push(...solutionOrString.action)
-			}
-		})
+		if (solutions) addSolutionParts(solutions)
 
 		return {
-			message: messageParts.join(' '),
-			action: actionParts,
+			actions: actionParts,
+			get message() {
+				return [...eventParts, ...explanationParts, ...solutionParts].join(' ')
+			},
+			// Adds
+			addEvents(events: Events[]) {
+				addEventParts(events)
+			},
+			addExplanations(explanations: Explanations[]) {
+				addExplanationParts(explanations)
+			},
+			addSolutions(solutions: Solutions[]) {
+				addSolutionParts(solutions)
+			},
+			// Overrides
+			overrideEvents(events: Events[]) {
+				// Clear event parts
+				eventParts.length = 0
+				// Add events
+				addEventParts(events)
+			},
+			overrideExplanations(explanations: Explanations[]) {
+				// Clear explanation parts
+				explanationParts.length = 0
+				// Add explanations
+				addExplanationParts(explanations)
+			},
+			overrideSolutions(solutions: Solutions[]) {
+				// Clear solution parts
+				solutionParts.length = 0
+				// Add explanations
+				addSolutionParts(solutions)
+			},
 			toString() {
-				return `${messageParts.join(' ')}${
+				return `${[...eventParts, ...explanationParts, ...solutionParts].join(' ')}${
 					actionParts ? actionParts.map((a) => ` ${a.text} (${a.href})`).join(' or') : ''
 				}`
 			}

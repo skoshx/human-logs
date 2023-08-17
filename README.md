@@ -62,7 +62,7 @@ const log = apiLogs({
 console.log(log.message)
 // => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page.
 
-console.log(log.action)
+console.log(log.actions)
 /* => [{
 		text: 'Go to status page',
 		href: 'https://status.foobar.inc'
