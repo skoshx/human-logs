@@ -8,8 +8,8 @@ import { toast } from 'sonner'
 export function Hero() {
 	function showHumanFriendlyLog() {
 		const humanFriendlyLog = apiLogs({
-			event: 'project_create_success',
-			solution: 'project_view'
+			events: ['project_create_success'],
+			solutions: ['project_view']
 		})
 
 		toast.success(humanFriendlyLog.message, {

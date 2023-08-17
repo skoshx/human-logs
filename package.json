@@ -30,7 +30,7 @@
 	],
 	"scripts": {
 		"dev": "vitest dev",
-		"dev:website": "pnpm dev --filter website",
+		"dev:website": "pnpm --filter website dev",
 		"build": "unbuild",
 		"test": "pnpm test:core && pnpm test:types",
 		"test:core": "vitest run",

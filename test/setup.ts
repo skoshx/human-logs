@@ -21,7 +21,7 @@ export const mockHumanLogs = createHumanLogs({
 		check_status_page: {
 			params: {},
 			template: 'You can check the status of our services on our status page.',
-			action: [
+			actions: [
 				{
 					text: 'Go to status page',
 					href: 'https://status.foobar.inc'

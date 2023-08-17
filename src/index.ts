@@ -33,7 +33,7 @@ function isTemplatedMessage(
 
 function isSolutionType(solution: string | Record<string, unknown>): solution is SolutionType {
 	if (typeof solution === 'string') return false
-	if (solution.action) return true
+	if (solution.actions) return true
 	return false
 }
 
@@ -143,8 +143,8 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 				if (!solutionOrString) {
 					return
 				}
-				if (isSolutionType(solutionOrString) && solutionOrString.action) {
-					actionParts.push(...solutionOrString.action)
+				if (isSolutionType(solutionOrString) && solutionOrString.actions) {
+					actionParts.push(...solutionOrString.actions)
 				}
 			})
 		}

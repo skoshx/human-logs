@@ -42,10 +42,10 @@ export const apiLogs = createHumanLogs({
 		check_status_page: {
 			template: 'You can check the status of our services on our status page.',
 			params: {},
-			action: [
+			actions: [
 				{
 					text: 'Go to status page',
-					href: 'https://status.foobar.inc'
+					href: 'https://skosh.dev'
 				}
 			]
 		}

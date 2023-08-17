@@ -9,15 +9,23 @@ import { toast } from 'sonner'
 export const apiLogs = createHumanLogs({
 	events: {
 		project_create_failed: 'Cannot create your project',
-		project_create_success: 'Successfully created your project.'
+		project_create_success: 'Successfully created your project.',
+		team_create_failed: 'Creating your team failed'
 	},
 	explanations: {
-		api_unreachable: 'because the API cannot be reached.'
+		api_unreachable: 'because the API cannot be reached.',
+		team_exists: {
+			template: 'because a team with ID "{teamId}" already exists.',
+			params: {
+				teamId: ''
+			}
+		}
 	},
 	solutions: {
 		check_status_page: {
-			message: 'You can check the status of our services on our status page.',
-			action: [
+			template: 'You can check the status of our services on our status page.',
+			params: {},
+			actions: [
 				{
 					text: 'Go to status page',
 					href: 'https://skosh.dev'
@@ -25,8 +33,9 @@ export const apiLogs = createHumanLogs({
 			]
 		},
 		project_view: {
-			message: '',
-			action: [
+			template: 'View the project.',
+			params: {},
+			actions: [
 				{
 					text: 'View',
 					href: 'https://skosh.dev'
@@ -53,9 +62,9 @@ export function Demo() {
 					type="error"
 					onClick={() => {
 						const apiLogError = apiLogs({
-							event: 'project_create_failed',
-							explanation: 'api_unreachable',
-							solution: 'check_status_page'
+							events: ['project_create_failed'],
+							explanations: ['api_unreachable'],
+							solutions: ['check_status_page']
 						})
 
 						toast.error(apiLogError.message, {
@@ -74,8 +83,8 @@ export function Demo() {
 					type="success"
 					onClick={() => {
 						const apiLogSuccess = apiLogs({
-							event: 'project_create_success',
-							solution: 'project_view'
+							events: ['project_create_success'],
+							solutions: ['project_view']
 						})
 
 						toast.success(apiLogSuccess.message, {
@@ -89,6 +98,22 @@ export function Demo() {
 					}}
 				>
 					Creating project goes well
+				</Button>
+				<Button
+					type="solid"
+					onClick={() => {
+						const apiLogSuccess = apiLogs({
+							events: ['team_create_failed'],
+							explanations: ['team_exists'],
+							params: {
+								teamId: 'winning-team'
+							}
+						})
+
+						toast.error(apiLogSuccess.message)
+					}}
+				>
+					Creating team that already exists
 				</Button>
 			</div>
 		</section>

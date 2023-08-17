@@ -11,7 +11,7 @@ export type ActionType = {
 }
 
 export type SolutionType = TemplatedMessage & {
-	action?: ActionType[]
+	actions?: ActionType[]
 }
 
 export type HumanLogsObject = {
@@ -23,5 +23,5 @@ export type HumanLogsObject = {
 
 export type HumanLogResponse = {
 	message: string
-	action?: ActionType[]
+	actions?: ActionType[]
 }
