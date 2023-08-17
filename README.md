@@ -20,6 +20,7 @@ Inspired by Vercel's [Error design framework](https://vercel.com/design/error#er
 
 - Create consistent, human-friendly logs throughout your application or library
 - Build versatile errors like lego-blocks
+- Support for parameters
 
 ## 💻 Example Usage
 
@@ -71,6 +72,7 @@ console.log(log.actions)
 console.log(log.toString())
 // => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page. Go to status page (https://status.foobar.inc)
 
+// Example with parameters
 const logWithParams = apiLogs({
 	event: ['team_create_failed'],
 	explanation: ['team_exists'],
