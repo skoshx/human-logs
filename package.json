@@ -1,6 +1,6 @@
 {
 	"name": "human-logs",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Human friendly logs for your APIs & projects.",
 	"repository": "skoshx/human-logs",
 	"exports": {
@@ -32,7 +32,7 @@
 		"dev": "vitest dev",
 		"dev:website": "pnpm --filter website dev",
 		"build": "unbuild",
-    "build:website": "pnpm --filter website build",
+		"build:website": "pnpm --filter website build",
 		"test": "pnpm test:core && pnpm test:types",
 		"test:core": "vitest run",
 		"test:types": "tsc --noEmit",
