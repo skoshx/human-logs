@@ -174,22 +174,22 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 				addSolutionParts(solutions)
 			},
 			// Overrides
-			overrideEvents(events: Events[]) {
+			overrideEvents(events: (keyof HumanLogs['events'])[]) {
 				// Clear event parts
 				eventParts.length = 0
-				// Add events
+				// @ts-ignore Add events
 				addEventParts(events)
 			},
-			overrideExplanations(explanations: Explanations[]) {
+			overrideExplanations(explanations: (keyof HumanLogs['explanations'])[]) {
 				// Clear explanation parts
 				explanationParts.length = 0
-				// Add explanations
+				// @ts-ignore Add explanations
 				addExplanationParts(explanations)
 			},
-			overrideSolutions(solutions: Solutions[]) {
+			overrideSolutions(solutions: (keyof HumanLogs['solutions'])[]) {
 				// Clear solution parts
 				solutionParts.length = 0
-				// Add explanations
+				// @ts-ignore Add explanations
 				addSolutionParts(solutions)
 			},
 			toString() {
