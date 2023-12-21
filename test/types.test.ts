@@ -92,7 +92,7 @@ describe('Params type tests', () => {
 		})
 	})
 
-	it('errors when adding', () => {
+	it('errors when adding without params', () => {
 		const humanLog = mockHumanLogs({
 			events: ['project_create_failed'],
 			explanations: ['api_unreachable']
