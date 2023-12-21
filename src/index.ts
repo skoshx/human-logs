@@ -71,12 +71,12 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 	type Explanations = HumanLogs['explanations']
 	type Events = HumanLogs['events']
 	type Solutions = HumanLogs['solutions']
-	type Params<K extends Array<keyof Explanations>> = UnionToIntersection<
+	type ExplanationParams<K extends Array<keyof Explanations>> = UnionToIntersection<
 		{
 			[I in keyof K]: Explanations[K[I]] extends { params: infer P } ? P : never
 		}[number]
 	>
-	type EventsParams<K extends Array<keyof Events>> = UnionToIntersection<
+	type EventParams<K extends Array<keyof Events>> = UnionToIntersection<
 		{
 			[I in keyof K]: Events[K[I]] extends { params: infer P } ? P : never
 		}[number]
@@ -100,42 +100,50 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 		events?: Events[]
 		explanations?: Explanations[]
 		solutions?: Solutions[]
-		params?: Params<Explanations[]> & EventsParams<Events[]> & SolutionParams<Solutions[]>
+		params?: ExplanationParams<Explanations[]> & EventParams<Events[]> & SolutionParams<Solutions[]>
 	}) {
 		const eventParts: string[] = []
 		const explanationParts: string[] = []
 		const solutionParts: string[] = []
 		const actionParts: ActionType[] = []
 
-		const addEventParts = (events: Events[]) => {
+		const addEventParts = (events: Events[], overwrittenParams?: HumanLogs['params']) => {
 			events.forEach((event) => {
 				eventParts.push(
-					...getMessagePartsFor('events', options, event as string, params as HumanLogs['params'])
+					...getMessagePartsFor(
+						'events',
+						options,
+						event as string,
+						overwrittenParams ?? (params as HumanLogs['params'])
+					)
 				)
 			})
 		}
 
-		const addExplanationParts = (explanations: Explanations[]) => {
+		const addExplanationParts = (
+			explanations: Explanations[],
+			overwrittenParams?: HumanLogs['params']
+		) => {
 			explanations?.forEach((explanation) => {
 				explanationParts.push(
 					...getMessagePartsFor(
 						'explanations',
 						options,
 						explanation as string,
-						params as HumanLogs['params']
+						overwrittenParams ?? (params as HumanLogs['params'])
 					)
 				)
 			})
 		}
 
-		const addSolutionParts = (solutions: Solutions[]) => {
+		const addSolutionParts = (solutions: Solutions[], overwrittenParams?: HumanLogs['params']) => {
 			solutions?.forEach((solution) => {
 				solutionParts.push(
 					...getMessagePartsFor(
 						'solutions',
 						options,
 						solution as string,
-						params as HumanLogs['params']
+						overwrittenParams ?? (params as HumanLogs['params'])
 					)
 				)
 
@@ -164,33 +172,58 @@ export function createHumanLogs<HumanLogs extends HumanLogsObject>(options: Huma
 				return [...eventParts, ...explanationParts, ...solutionParts].join(' ')
 			},
 			// Adds
-			addEvents(events: Events[]) {
-				addEventParts(events)
+			addEvents<InnerEvents extends keyof HumanLogs['events']>(
+				events: InnerEvents[],
+				params?: EventParams<InnerEvents[]>
+			) {
+				addEventParts(events as unknown as Events[], params as HumanLogs['params'])
+				return this
 			},
-			addExplanations(explanations: Explanations[]) {
-				addExplanationParts(explanations)
+			addExplanations<InnerExplanations extends keyof HumanLogs['explanations']>(
+				explanations: InnerExplanations[],
+				params?: ExplanationParams<InnerExplanations[]>
+			) {
+				addExplanationParts(explanations as unknown as Explanations[], params as any)
+				return this
 			},
-			addSolutions(solutions: Solutions[]) {
-				addSolutionParts(solutions)
+			addSolutions<InnerSolutions extends keyof HumanLogs['solutions']>(
+				solutions: InnerSolutions[],
+				params?: SolutionParams<InnerSolutions[]>
+			) {
+				addSolutionParts(solutions as unknown as Solutions[], params as HumanLogs['params'])
+				return this
 			},
 			// Overrides
-			overrideEvents(events: (keyof HumanLogs['events'])[]) {
+			overrideEvents<InnerEvents extends keyof HumanLogs['events']>(
+				events: InnerEvents[],
+				params?: EventParams<InnerEvents[]>
+			) {
 				// Clear event parts
 				eventParts.length = 0
-				// @ts-ignore Add events
-				addEventParts(events)
+				addEventParts(events as unknown as Events[], params as HumanLogs['params'])
+				return this
 			},
-			overrideExplanations(explanations: (keyof HumanLogs['explanations'])[]) {
+			overrideExplanations<InnerExplanations extends keyof HumanLogs['explanations']>(
+				explanations: InnerExplanations[],
+				params?: ExplanationParams<InnerExplanations[]>
+			) {
 				// Clear explanation parts
 				explanationParts.length = 0
-				// @ts-ignore Add explanations
-				addExplanationParts(explanations)
+				addExplanationParts(
+					explanations as unknown as Explanations[],
+					params as HumanLogs['params']
+				)
+				return this
 			},
-			overrideSolutions(solutions: (keyof HumanLogs['solutions'])[]) {
+
+			overrideSolutions<InnerSolutions extends keyof HumanLogs['solutions']>(
+				solutions: InnerSolutions[],
+				params?: SolutionParams<InnerSolutions[]>
+			) {
 				// Clear solution parts
 				solutionParts.length = 0
-				// @ts-ignore Add explanations
-				addSolutionParts(solutions)
+				addSolutionParts(solutions as unknown as Solutions[], params as HumanLogs['params'])
+				return this
 			},
 			toString() {
 				return `${[...eventParts, ...explanationParts, ...solutionParts].join(' ')}${

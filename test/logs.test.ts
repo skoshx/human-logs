@@ -76,6 +76,20 @@ it('can override events, explanations & solutions', () => {
 	)
 })
 
+it('can add & override events with params', () => {
+	const humanLog = mockHumanLogs({
+		events: ['team_create_failed']
+	})
+
+	humanLog.addExplanations(['team_exists'], {
+		teamId: 'flytrap'
+	})
+
+	expect(humanLog.message).toStrictEqual(
+		'Creating your team failed because a team with ID "flytrap" already exists.'
+	)
+})
+
 it('smoke test', () => {
 	const humanLog = mockHumanLogs({
 		events: ['project_create_failed'],
@@ -96,4 +110,22 @@ it('smoke test', () => {
 			href: 'https://status.foobar.inc'
 		}
 	])
+})
+
+it('can chain functions', () => {
+	const humanLog = mockHumanLogs({
+		events: ['project_create_failed'],
+		explanations: ['api_unreachable'],
+		solutions: ['check_status_page']
+	})
+
+	expect(
+		humanLog
+			.addExplanations(['team_exists'], {
+				teamId: 'flytrap'
+			})
+			.addSolutions(['try_again']).message
+	).toEqual(
+		'Cannot create your project because the API cannot be reached. because a team with ID "flytrap" already exists. You can check the status of our services on our status page. Please try again.'
+	)
 })

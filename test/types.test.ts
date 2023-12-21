@@ -31,6 +31,19 @@ describe('Type tests', () => {
 			solutions: ['nonexistent']
 		})
 	})
+
+	it('adding to existing events, explanations & solutions', () => {
+		const humanLog = mockHumanLogs({
+			explanations: ['team_exists'],
+			solutions: ['check_status_page'],
+			params: {
+				teamId: 'some-team'
+			}
+		})
+
+		humanLog.addExplanations(['api_unreachable'])
+		humanLog.addSolutions(['contact_us'])
+	})
 })
 
 describe('Params type tests', () => {
@@ -77,5 +90,14 @@ describe('Params type tests', () => {
 				teamId: 'winning-team'
 			}
 		})
+	})
+
+	it('errors when adding', () => {
+		const humanLog = mockHumanLogs({
+			events: ['project_create_failed'],
+			explanations: ['api_unreachable']
+		})
+		// @ts-expect-error: params for `team_exists` should be required
+		humanLog.addExplanations(['team_exists'], {})
 	})
 })
