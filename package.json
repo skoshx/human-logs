@@ -29,11 +29,11 @@
 		"error-handling"
 	],
 	"scripts": {
-		"dev": "turbo dev",
-		"build": "turbo build",
-		"test": "turbo test",
-		"lint": "turbo lint",
-		"release": "turbo release",
+		"dev": "vitest dev",
+		"build": "unbuild",
+		"test": "vitest run",
+		"lint": "eslint",
+		"release": "np",
 		"format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
 		"format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
 	},
