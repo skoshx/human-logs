@@ -52,12 +52,11 @@
 		"eslint-plugin-prettier": "^4.2.1",
 		"prettier": "^2.8.8",
 		"turbo": "^1.10.6",
+		"type-fest": "^4.23.0",
+		"typescript": "5",
 		"unbuild": "^1.2.1",
 		"vite": "^4.3.9",
 		"vitest": "^0.32.2"
 	},
-	"packageManager": "pnpm@8.6.0",
-	"dependencies": {
-		"typescript": "5"
-	}
+	"packageManager": "pnpm@8.6.0"
 }
