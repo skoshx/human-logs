@@ -1,6 +1,6 @@
 {
   "name": "human-logs",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "description": "Human friendly logs for your APIs & projects.",
   "repository": "skoshx/human-logs",
   "exports": {
