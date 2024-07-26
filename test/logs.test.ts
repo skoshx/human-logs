@@ -13,7 +13,7 @@ describe("formatters", () => {
       [
         "Fetching posts failed because the Image `image` is missing for post with ID `abcd-123`, and no fallback was provided.",
         "",
-        "Possible solutions:",
+        "Solutions:",
         "1) add a fallback to your parameter definition like this: ",
         "",
         "url(`image`, { fallback: `https://useflytrap.com` })",
@@ -37,7 +37,7 @@ describe("chaining", () => {
       [
         "Fetching posts failed because the Image `image` is missing for post with ID `abcd-123`, and no fallback was provided.",
         "",
-        "Possible solutions:",
+        "Solutions:",
         "1) add a fallback to your parameter definition like this: ",
         "",
         "url(`image`, { fallback: `https://useflytrap.com` })",
@@ -62,7 +62,7 @@ describe("chaining", () => {
       [
         "Fetching posts failed because the Image `image` is missing for post with ID `abcd-123`, and no fallback was provided and unsupported block type `Video` is included on this page.",
         "",
-        "Possible solutions:",
+        "Solutions:",
         "1) add a fallback to your parameter definition like this: ",
         "",
         "url(`image`, { fallback: `https://useflytrap.com` })",
@@ -82,7 +82,7 @@ describe("chaining", () => {
 
     expect(error.toString()).toBe(
       [
-        "Possible solutions:",
+        "Solutions:",
         "1) you can check the status of our services on our status page",
       ].join("\n")
     )
