@@ -1,46 +1,48 @@
 {
-	"name": "human-logs",
-	"version": "0.4.1",
-	"description": "Human friendly logs for your APIs & projects.",
-	"repository": "skoshx/human-logs",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
-	"files": [
-		"dist"
-	],
-	"author": "skoshx <rasmus@skosh.dev>",
-	"license": "MIT",
-	"type": "module",
-	"keywords": [
-		"typescript",
-		"human-friendly",
-		"logs",
-		"api",
-		"error",
-		"logging",
-		"error-handling"
-	],
-	"scripts": {
-		"dev": "vitest dev",
-		"build": "unbuild",
-		"test": "vitest run",
-		"lint": "eslint",
-		"release": "np",
-		"format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
-		"format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
-	},
-	"devDependencies": {
-		"type-fest": "^4.23.0",
-		"typescript": "5",
-		"unbuild": "^1.2.1",
-		"vitest": "^2.0.4"
-	}
+  "name": "human-logs",
+  "version": "0.4.1",
+  "description": "Human friendly logs for your APIs & projects.",
+  "repository": "skoshx/human-logs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "skoshx <rasmus@skosh.dev>",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "typescript",
+    "human-friendly",
+    "logs",
+    "api",
+    "error",
+    "logging",
+    "error-handling"
+  ],
+  "scripts": {
+    "dev": "vitest dev",
+    "build": "unbuild",
+    "test": "vitest run",
+    "lint": "eslint",
+    "release": "np",
+    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.1.0",
+    "type-fest": "^4.23.0",
+    "typescript": "5",
+    "typescript-eslint": "^7.17.0",
+    "unbuild": "^1.2.1",
+    "vitest": "^2.0.4"
+  }
 }
