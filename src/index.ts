@@ -95,24 +95,44 @@ export function createHumanLogs<LogParts extends LogObject[]>(
 		// ...[params]: CombineParams<LogParts, LogNames> extends never ? [] : [CombineParams<LogParts, LogNames>]
 		params: CombineParams<LogParts, LogNames>
 	) {
-		const matchingParts = logs.filter(({ name }) => logParts.includes(name))
+		let localLogParts = [...logParts]
+		let localParams: CombineParams<LogParts, LogNames> = {
+			...params
+		}
 
-		// Then template all of the parts
-		const templatedParts = matchingParts.map((part) => {
-			return {
-				...part,
-				params: params as LogObject['params'],
-				message: replaceTemplateParams(part.message, params as LogObject['params'])
-			}
-		})
+		const getTemplatedParts = () =>
+			logs
+				.filter(({ name }) => localLogParts.includes(name))
+				.map((part) => ({
+					...part,
+					// params: params as LogObject['params'],
+					params: localParams,
+					message: replaceTemplateParams(part.message, localParams)
+				}))
 
 		return {
 			get parts() {
-				return templatedParts
+				return getTemplatedParts()
+			},
+			add<AddLogNames extends Array<LogParts[number]['name']>>(
+				logParts: AddLogNames,
+				params: CombineParams<LogParts, AddLogNames>
+			) {
+				localLogParts.push(...logParts)
+				localParams = { ...localParams, ...params }
+				return this
+			},
+			override<AddLogNames extends Array<LogParts[number]['name']>>(
+				logParts: AddLogNames,
+				params: CombineParams<LogParts, AddLogNames>
+			) {
+				localLogParts = logParts
+				localParams = { ...localParams, ...params }
+				return this
 			},
 			toString() {
 				const formatter = options.formatter ?? textFormatter
-				return formatter(templatedParts)
+				return formatter(getTemplatedParts())
 			}
 		}
 	}

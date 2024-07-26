@@ -9,13 +9,14 @@ export const textFormatter: Formatter = (logParts) => {
 
 	const logMessageParts = [
 		capitalize(events.map(({ message }) => message).join(' and ')),
-		' because ',
+		events.length > 0 && ' because ',
 		explanations.map(({ message }) => message).join(' and '),
-		'.',
-		'\n',
-		'\n',
-		'Possible solutions:\n',
-		solutions.map(({ message }, solutionIndex) => `${solutionIndex + 1}) ${message}`)
+		explanations.length > 0 && '.',
+		solutions.length > 0 && explanations.length > 0 && '\n',
+		solutions.length > 0 && explanations.length > 0 && '\n',
+		solutions.length > 0 && 'Possible solutions:\n',
+		solutions.length > 0 &&
+			solutions.map(({ message }, solutionIndex) => `${solutionIndex + 1}) ${message}`).join('\n')
 	]
-	return logMessageParts.join('')
+	return logMessageParts.filter(Boolean).join('')
 }

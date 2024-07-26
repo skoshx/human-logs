@@ -23,7 +23,7 @@ export const mockErrors = createHumanLogs([
 	),
 	explanation(
 		'unsupported_blocktype',
-		'unsupported block type `{blockType} is included on this page.`',
+		'unsupported block type `{blockType}` is included on this page',
 		{
 			params: { blockType: '' }
 		}

@@ -1,5 +1,5 @@
-import { describe, expectTypeOf, it } from 'vitest'
-import { mockErrors } from './setup'
+import { describe, it } from 'vitest'
+import { mockErrors } from './test-mocks'
 
 describe('basic type tests', () => {
 	it('only valid keys', () => {
