@@ -88,7 +88,7 @@ function replaceTemplateParams<Params extends LogObject['params']>(
 
 export function createHumanLogs<LogParts extends LogObject[]>(
 	logs: LogParts,
-	options: CreateHumanLogsOptions<LogParts> = {}
+	options: CreateHumanLogsOptions = {}
 ) {
 	return function <LogNames extends Array<LogParts[number]['name']>>(
 		logParts: LogNames,

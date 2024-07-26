@@ -41,8 +41,8 @@ export type LogObject = {
 	actions?: ActionType[]
 }
 
-export type CreateHumanLogsOptions<LogParts extends LogObject[]> = {
-	formatter?: () => {}
+export type CreateHumanLogsOptions = {
+	formatter?: Formatter
 }
 
 export type Formatter = <LogParts extends LogObject[]>(logParts: LogParts) => string
