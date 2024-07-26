@@ -29,33 +29,18 @@
 		"error-handling"
 	],
 	"scripts": {
-		"dev": "vitest dev",
-		"dev:website": "pnpm --filter website dev",
-		"build": "unbuild",
-		"build:website": "pnpm --filter website build",
-		"test": "pnpm test:core && pnpm test:types",
-		"test:core": "vitest run",
-		"test:types": "tsc --noEmit",
-		"test:coverage": "vitest run --coverage",
-		"lint": "pnpm lint:all:eslint && pnpm lint:all:prettier",
-		"lint:all:eslint": "pnpm lint:eslint --ext .ts,.js,.mjs,.cjs \"{src,test}/**/*.{js,json,ts}\"",
-		"lint:all:prettier": "pnpm lint:prettier \"{src,test,website}/**/*.{js,json,ts}\"",
-		"lint:eslint": "eslint --fix",
-		"lint:prettier": "prettier --write --loglevel warn",
-		"prepublishOnly": "pnpm lint && pnpm test",
-		"release": "np"
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"test": "turbo test",
+		"lint": "turbo lint",
+		"release": "turbo release",
+		"format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+		"format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^5.60.1",
-		"eslint": "^8.43.0",
-		"eslint-config-prettier": "^8.8.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"prettier": "^2.8.8",
-		"turbo": "^1.10.6",
 		"type-fest": "^4.23.0",
 		"typescript": "5",
 		"unbuild": "^1.2.1",
 		"vitest": "^2.0.4"
-	},
-	"packageManager": "pnpm@8.6.0"
+	}
 }

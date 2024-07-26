@@ -11,129 +11,134 @@
  *
  */
 
-import { textFormatter } from './formatters'
-import { ActionType, CombineParams, CreateHumanLogsOptions, LogObject } from './types'
+import { textFormatter } from "./formatters"
+import {
+  ActionType,
+  CombineParams,
+  CreateHumanLogsOptions,
+  LogObject,
+} from "./types"
 
 function log<Name, Message, Params>(
-	name: Name & {},
-	message: Message & {},
-	options: {
-		params: Params
-		type: LogObject['type']
-		actions?: ActionType[]
-	} = {
-		params: {} as Params,
-		type: 'event'
-	}
+  name: Name & {},
+  message: Message & {},
+  options: {
+    params: Params
+    type: LogObject["type"]
+    actions?: ActionType[]
+  } = {
+    params: {} as Params,
+    type: "event",
+  }
 ) {
-	return {
-		name: name,
-		message,
-		type: options.type,
-		params: options.params
-	} as const
+  return {
+    name: name,
+    message,
+    type: options.type,
+    params: options.params,
+  } as const
 }
 
 export function event<Name, Message, Params>(
-	name: Name & {},
-	message: Message & {},
-	options: {
-		params: Params
-		actions?: ActionType[]
-	} = {
-		params: {} as Params
-	}
+  name: Name & {},
+  message: Message & {},
+  options: {
+    params: Params
+    actions?: ActionType[]
+  } = {
+    params: {} as Params,
+  }
 ) {
-	return log(name, message, { ...options, type: 'event' })
+  return log(name, message, { ...options, type: "event" })
 }
 
 export function explanation<Name, Message, Params>(
-	name: Name & {},
-	message: Message & {},
-	options: {
-		params: Params
-		actions?: ActionType[]
-	} = {
-		params: {} as Params
-	}
+  name: Name & {},
+  message: Message & {},
+  options: {
+    params: Params
+    actions?: ActionType[]
+  } = {
+    params: {} as Params,
+  }
 ) {
-	return log(name, message, { ...options, type: 'explanation' })
+  return log(name, message, { ...options, type: "explanation" })
 }
 
 export function solution<Name, Message, Params>(
-	name: Name & {},
-	message: Message & {},
-	options: {
-		params: Params
-		actions?: ActionType[]
-	} = {
-		params: {} as Params
-	}
+  name: Name & {},
+  message: Message & {},
+  options: {
+    params: Params
+    actions?: ActionType[]
+  } = {
+    params: {} as Params,
+  }
 ) {
-	return log(name, message, { ...options, type: 'solution' })
+  return log(name, message, { ...options, type: "solution" })
 }
 
-function replaceTemplateParams<Params extends LogObject['params']>(
-	input: string,
-	params: Params
+function replaceTemplateParams<Params extends LogObject["params"]>(
+  input: string,
+  params: Params
 ): string {
-	let result = String(input)
-	for (const key in params) {
-		const value = params[key] as string
-		const placeholder = `{${key}}`
-		result = result.split(placeholder).join(value)
-	}
-	return result
+  let result = String(input)
+  for (const key in params) {
+    const value = params[key] as string
+    const placeholder = `{${key}}`
+    result = result.split(placeholder).join(value)
+  }
+  return result
 }
 
 export function createHumanLogs<LogParts extends LogObject[]>(
-	logs: LogParts,
-	options: CreateHumanLogsOptions = {}
+  logs: LogParts,
+  options: CreateHumanLogsOptions = {}
 ) {
-	return function <LogNames extends Array<LogParts[number]['name']>>(
-		logParts: LogNames,
-		// ...[params]: CombineParams<LogParts, LogNames> extends never ? [] : [CombineParams<LogParts, LogNames>]
-		params: CombineParams<LogParts, LogNames>
-	) {
-		let localLogParts = [...logParts]
-		let localParams: CombineParams<LogParts, LogNames> = {
-			...params
-		}
+  return function <LogNames extends Array<LogParts[number]["name"]>>(
+    logParts: LogNames,
+    // ...[params]: CombineParams<LogParts, LogNames> extends never ? [] : [CombineParams<LogParts, LogNames>]
+    params: CombineParams<LogParts, LogNames>
+  ) {
+    let localLogParts = [...logParts]
+    let localParams: CombineParams<LogParts, LogNames> = {
+      ...params,
+    }
 
-		const getTemplatedParts = () =>
-			logs
-				.filter(({ name }) => localLogParts.includes(name))
-				.map((part) => ({
-					...part,
-					// params: params as LogObject['params'],
-					params: localParams,
-					message: replaceTemplateParams(part.message, localParams)
-				}))
+    const getTemplatedParts = () =>
+      logs
+        .filter(({ name }) => localLogParts.includes(name))
+        .map((part) => ({
+          ...part,
+          // params: params as LogObject['params'],
+          params: localParams,
+          message: replaceTemplateParams(part.message, localParams),
+        }))
 
-		return {
-			get parts() {
-				return getTemplatedParts()
-			},
-			add<AddLogNames extends Array<LogParts[number]['name']>>(
-				logParts: AddLogNames,
-				params: CombineParams<LogParts, AddLogNames>
-			) {
-				localLogParts.push(...logParts)
-				localParams = { ...localParams, ...params }
-				return this
-			},
-			override<AddLogNames extends Array<LogParts[number]['name']>>(
-				logParts: AddLogNames,
-				params: CombineParams<LogParts, AddLogNames>
-			) {
-				localLogParts = logParts
-				localParams = { ...localParams, ...params }
-				return this
-			},
-			toString() {
-				const formatter = options.formatter ?? textFormatter
-				return formatter(getTemplatedParts())
-			}
-		}
-	}
+    return {
+      get parts() {
+        return getTemplatedParts()
+      },
+      add<AddLogNames extends Array<LogParts[number]["name"]>>(
+        logParts: AddLogNames,
+        params: CombineParams<LogParts, AddLogNames>
+      ) {
+        localLogParts.push(...logParts)
+        localParams = { ...localParams, ...params }
+        return this
+      },
+      override<AddLogNames extends Array<LogParts[number]["name"]>>(
+        logParts: AddLogNames,
+        params: CombineParams<LogParts, AddLogNames>
+      ) {
+        localLogParts = logParts
+        localParams = { ...localParams, ...params }
+        return this
+      },
+      toString() {
+        const formatter = options.formatter ?? textFormatter
+        return formatter(getTemplatedParts())
+      },
+    }
+  }
 }
