@@ -18,71 +18,100 @@ Inspired by Vercel's [Error design framework](https://vercel.com/design/error#er
 
 ## Features
 
-- Create consistent, human-friendly logs throughout your application or library
-- Build versatile errors like lego-blocks
-- Support for parameters
+- Create consistent, helpful logs that help users fix the problem themselves
+- Build versatile errors by connecting events, explanations and solutions
+- Support for parameters: template variables into the log messages
+- Only 193 lines of code
 
 ## 💻 Example Usage
 
+We start by defining our `events`, `explanations`, and `solutions`. These will later be used in logs to create user-friendly errors, guiding the users to the right solution.
+
 ```typescript
-export const apiLogs = createHumanLogs({
-	events: {
-		project_create_failed: 'Cannot create your project',
-		team_create_failed: 'Cannot create your team',
-	},
-	explanations: {
-		api_unreachable: 'because the API cannot be reached.',
-		team_exists: {
-			template: 'because a team with ID "{teamId}" already exists.',
-			params: {
-				teamId: ''
-			}
-		}
-	},
-	solutions: {
-		check_status_page: {
-			template: 'You can check the status of our services on our status page.',
-			params: {},
-			actions: [
-				{
-					text: 'Go to status page',
-					href: 'https://skosh.dev'
-				}
-			]
-		}
-	}
-})
+import { createHumanLogs, event, explanation, solution, createTextFormatter } from "human-logs"
 
-// You can now use `apiLogs` to create user-friendly error logs, by connecting events, explanations and solutions like lego-blocks.
-const log = apiLogs({
-	event: ['project_create_failed'],
-	explanation: ['api_unreachable'],
-	solution: ['check_status_page']
-})
+export const notionError = createHumanLogs(
+  [
+    event("fetching_posts_failed", "fetching posts failed", {
+      params: {},
+    }),
+    explanation(
+      "missing_params",
+      "the {paramType} `{paramName}` is missing for post with ID `{postId}`, and no fallback was provided",
+      {
+        params: {
+          paramType: "",
+          paramName: "",
+          postId: "",
+        },
+      }
+    ),
+    explanation(
+      "unsupported_blocktype",
+      "unsupported block type `{blockType}` is is included in this page",
+      {
+        params: {
+          blockType: "",
+        },
+      }
+    ),
+    solution(
+      "add_missing_param",
+      "add the missing {paramType} on your Notion page",
+      {
+        params: {},
+      }
+    ),
+    solution(
+      "provide_fallback",
+      "add a fallback to your parameter definition like this:\n\nurl(`{paramName}`, { fallback: `https://useflytrap.com` })",
+      {
+        params: {
+          paramName: "",
+        },
+      }
+    ),
+    solution("open_issue", "open an issue for this on GitHub", {
+      params: {},
+      actions: [
+        {
+          text: "Open an issue",
+          href: "https://github.com/useflytrap/notion-contentlayer/issues/new",
+        },
+      ],
+    }),
+  ],
+  {
+    formatter: createTextFormatter({
+      eventsPrefix: "🚧 ",
+      solutionsPrefix: "🛠️ ",
+    }),
+  }
+)
 
-console.log(log.message)
-// => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page.
+// You can now use `notionError` to create user-friendly error logs, by connecting events, explanations and solutions like lego-blocks.
+const errorLog = notionError([
+  "fetching_posts_failed",
+  "missing_params",
+  "add_missing_param",
+  "add_skip_missing_fields",
+], {
+	// 👇 these are inferred like magic!
+	paramName: 'image',
+  paramType: 'Image',
+  postId: 'abcd-123',
+});
 
-console.log(log.actions)
-/* => [{
-		text: 'Go to status page',
-		href: 'https://status.foobar.inc'
-	}]*/
+console.log(errorLog.toString())
+/* => "🚧 Fetching posts failed because the Image `image` is missing for post with ID `abcd-123`, and no fallback was provided.
 
-console.log(log.toString())
-// => Cannot create your project because the API cannot be reached. You can check the status of our services on our status page. Go to status page (https://status.foobar.inc)
-
-// Example with parameters
-const logWithParams = apiLogs({
-	event: ['team_create_failed'],
-	explanation: ['team_exists'],
-	params: {
-		teamId: 'winning-team'
-	}
-})
-console.log(logWithParams.message)
-// => Cannot create your team because a team with ID "winning-team" already exists.
+🛠️ Solutions:
+1) add the missing Image on your Notion page
+2) if you want to skip posts that have missing fields, add `skipMissingFields`: true to your `fetchPosts` call like this: `notionSource.fetchPosts({ skipMissingFields: true })`"
+*/
 ```
+
+Wow! Look at how helpful those errors are. These are errors developers, product end-users and everyone in between could only DREAM OF.
 
 ## 💻 Development
 
