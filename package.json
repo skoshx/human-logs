@@ -32,7 +32,7 @@
     "dev": "vitest dev",
     "build": "unbuild",
     "test": "vitest run",
-    "lint": "eslint",
+    "lint": "eslint --fix",
     "release": "np",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"

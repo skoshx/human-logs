@@ -46,15 +46,6 @@ export const notionError = createHumanLogs(
         },
       }
     ),
-    explanation(
-      "unsupported_blocktype",
-      "unsupported block type `{blockType}` is is included in this page",
-      {
-        params: {
-          blockType: "",
-        },
-      }
-    ),
     solution(
       "add_missing_param",
       "add the missing {paramType} on your Notion page",
@@ -69,6 +60,13 @@ export const notionError = createHumanLogs(
         params: {
           paramName: "",
         },
+      }
+    ),
+		solution(
+      "add_skip_missing_fields",
+      "if you want to skip posts that have missing fields, add `skipMissingFields`: true to your `fetchPosts` call like this: `notionSource.fetchPosts({ skipMissingFields: true })`",
+      {
+        params: {},
       }
     ),
     solution("open_issue", "open an issue for this on GitHub", {
@@ -94,10 +92,11 @@ const errorLog = notionError([
   "fetching_posts_failed",
   "missing_params",
   "add_missing_param",
+	"provide_fallback",
   "add_skip_missing_fields",
 ], {
-	// 👇 these are inferred like magic!
-	paramName: 'image',
+  // 👇 these are inferred like magic!
+  paramName: 'image',
   paramType: 'Image',
   postId: 'abcd-123',
 });
@@ -107,7 +106,8 @@ console.log(errorLog.toString())
 
 🛠️ Solutions:
 1) add the missing Image on your Notion page
-2) if you want to skip posts that have missing fields, add `skipMissingFields`: true to your `fetchPosts` call like this: `notionSource.fetchPosts({ skipMissingFields: true })`"
+2) add a fallback to your parameter definition like this: url(`image`, { fallback: `https://useflytrap.com` })
+3) if you want to skip posts that have missing fields, add `skipMissingFields`: true to your `fetchPosts` call like this: `notionSource.fetchPosts({ skipMissingFields: true })`"
 */
 ```
 
