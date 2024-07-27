@@ -92,7 +92,7 @@ const errorLog = notionError([
   "fetching_posts_failed",
   "missing_params",
   "add_missing_param",
-	"provide_fallback",
+  "provide_fallback",
   "add_skip_missing_fields",
 ], {
   // 👇 these are inferred like magic!
